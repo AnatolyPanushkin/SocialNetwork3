@@ -1,0 +1,11 @@
+@base_address = http://localhost:5019
+GET {{base_address}}/
+
+POST {{base_address}}/
+POST {{base_address}}/api/publications
+Content-Type: application/json
+{
+  "name": "Minsk",
+  "address": "Minsk, Belarus",
+  "code": "MSQ"
+}

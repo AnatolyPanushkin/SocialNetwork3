@@ -1,4 +1,5 @@
-﻿using SocialNetwork.Domain.Entities;
+﻿using SocialNetwork.Domain.Aggregates.UserAggregate;
+using SocialNetwork.Domain.Entities;
 
 namespace SocialNetwork.Domain.Aggregates;
 

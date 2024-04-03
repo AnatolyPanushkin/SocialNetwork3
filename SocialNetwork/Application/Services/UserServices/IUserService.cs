@@ -1,6 +1,7 @@
 ﻿using SocialNetwork.Domain.Aggregates;
+using SocialNetwork.Domain.Aggregates.UserAggregate;
 
-namespace SocialNetwork.Domain.Services;
+namespace SocialNetwork.Application.Services.UserServices;
 
 public interface IUserService
 {

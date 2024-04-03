@@ -1,7 +1,9 @@
 ﻿using System.Globalization;
 using SocialNetwork.Domain.Aggregates;
+using SocialNetwork.Domain.Aggregates.UserAggregate;
+using SocialNetwork.Infrastructure.Data;
 
-namespace SocialNetwork.Domain.Services;
+namespace SocialNetwork.Application.Services.UserServices;
 
 public class UserService : IUserService
 {
@@ -14,21 +16,21 @@ public class UserService : IUserService
 
     public async Task<User> AddUser(string firstName, string lastName, DateOnly birthday)
     {
-        var userName = new UserName( firstName,lastName);
+        var userName = new UserName(firstName, lastName);
         var userBirthday = new Birthday(birthday);
-        
-        var user = new User(userName,userBirthday);
+
+        var user = new User(userName, userBirthday);
 
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
-        
+
         return user;
     }
 
     public async Task<Publication> AddPublication(string textContent, string mediaContent, Guid userId)
     {
         var user = _context.Users.FirstOrDefault(u => u.Id == userId);
-        
+
         if (user is null) throw new UserNotFound();
 
         var newPublication = new Publication(textContent, mediaContent, user);

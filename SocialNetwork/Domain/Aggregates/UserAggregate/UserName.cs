@@ -1,6 +1,6 @@
-﻿using SocialNetwork.Domain.Entities;
+﻿using SocialNetwork.Domain.ValueObjects;
 
-namespace SocialNetwork.Domain.Aggregates;
+namespace SocialNetwork.Domain.Aggregates.UserAggregate;
 
 public class UserName : ValueObject
 {

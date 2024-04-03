@@ -1,4 +1,6 @@
-﻿namespace SocialNetwork.Domain.Aggregates
+﻿using SocialNetwork.Domain.Aggregates.UserAggregate;
+
+namespace SocialNetwork.Domain.Aggregates
 {
     public class UsersFriends
     {

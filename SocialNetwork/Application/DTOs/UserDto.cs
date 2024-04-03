@@ -1,8 +1,8 @@
-﻿namespace SocialNetwork.DTOs;
+﻿namespace SocialNetwork.Application.DTOs;
 
 public class UserDto
 {
-    
+
 }
 
 public class UserInputDto

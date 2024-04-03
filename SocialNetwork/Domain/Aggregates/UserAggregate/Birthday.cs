@@ -1,6 +1,6 @@
-﻿using SocialNetwork.Domain.Entities;
+﻿using SocialNetwork.Domain.ValueObjects;
 
-namespace SocialNetwork.Domain.Aggregates;
+namespace SocialNetwork.Domain.Aggregates.UserAggregate;
 
 public class Birthday : ValueObject
 {
@@ -23,7 +23,7 @@ public class Birthday : ValueObject
     {
         yield return Date;
     }
-    
+
     public static DateOnly ToDateOnly(DateTime dateTime)
     {
         return new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);

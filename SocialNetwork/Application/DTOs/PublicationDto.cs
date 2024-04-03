@@ -1,4 +1,4 @@
-﻿namespace SocialNetwork.DTOs;
+﻿namespace SocialNetwork.Application.DTOs;
 
 public class PublicationDto
 {

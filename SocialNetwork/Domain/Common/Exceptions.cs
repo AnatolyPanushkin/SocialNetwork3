@@ -1,10 +1,8 @@
-﻿using SocialNetwork.Domain.Common;
-
-namespace SocialNetwork.Domain.Aggregates;
+﻿namespace SocialNetwork.Domain.Common;
 
 public class Exceptions
 {
-    
+
 }
 
 public class UserNotFound : BadRequestException

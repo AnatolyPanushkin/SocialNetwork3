@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using SocialNetwork.Domain.Aggregates;
 using SocialNetwork.Domain.Aggregates.UserAggregate;
+using SocialNetwork.Domain.Common;
 using SocialNetwork.Infrastructure.Data;
 
 namespace SocialNetwork.Application.Services.UserServices;
@@ -50,19 +51,5 @@ public class UserService : IUserService
         await _context.SaveChangesAsync();
 
         return user;
-    }
-
-    public async Task<List<Publication>> GetListPublications(Guid currentUserId, Guid userId)
-    {
-        var currentUser = _context.Users.FirstOrDefault(u => u.Id == currentUserId);
-
-        if (currentUser.UsersFriends.Contains(cu => cu.UserId == userId))
-        {
-            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
-
-            return user.Publications.ToList();
-        };
-
-        throw new UserNotFound();
     }
 }

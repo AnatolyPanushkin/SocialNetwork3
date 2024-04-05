@@ -1,13 +1,14 @@
-﻿using SocialNetwork.Domain.Aggregates.UserAggregate;
+﻿using Coravel.Invocable;
+using Quartz;
+using SocialNetwork.Domain.Aggregates.UserAggregate;
+using SocialNetwork.Domain.Entities;
 
 namespace SocialNetwork.Domain.Aggregates
 {
-    public class UsersFriends
+    public class UsersFriends : Entity
     {
-        public Guid UserId { get; set; }
-        public virtual User User { get; set; }
+      public Guid UserId { get; set; }
 
-        public Guid UsersFriendId { get; set; }
-        public virtual User UsersFriend { get; set; }
+      public Guid UserFriendId { get; set; }
     }
 }

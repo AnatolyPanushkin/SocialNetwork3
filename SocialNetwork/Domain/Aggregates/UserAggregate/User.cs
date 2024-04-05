@@ -7,14 +7,11 @@ public class User : Entity
     public UserName UserName { get; private set; }
     public Birthday Birthday { get; private set; }
 
-    private List<Publication> _publications;
-    public IReadOnlyCollection<Publication> Publications => _publications.AsReadOnly();
+    private List<Guid> _publications;
+    public IReadOnlyCollection<Guid> Publications => _publications.AsReadOnly();
 
-    private virtual ICollection<UsersFriends> _usersFriends;
-    public IReadOnlyCollection<UsersFriends> UsersFriends => _usersFriends.AsReadOnly();
-
-    /* private List<User> _friends;
-     public IReadOnlyCollection<User> Friends => _friends.AsReadOnly();*/
+    private List<Guid> _friends;
+    public IReadOnlyCollection<Guid> Friends => _friends.AsReadOnly();
 
     private User() { }
 
@@ -23,7 +20,5 @@ public class User : Entity
         Id = Guid.NewGuid();
         UserName = userName;
         Birthday = birthday;
-        _publications = new List<Publication>();
-        //_friends = new List<User>();
     }
 }

@@ -10,6 +10,8 @@ namespace SocialNetwork.Infrastructure.Data
 
         public DbSet<Publication> Publications { get; set; }
 
+        public DbSet<RandomFriend> RandomFriends { get; set; }
+
         public SocialNetworkContext(DbContextOptions<SocialNetworkContext> options) : base(options)
         {
         }

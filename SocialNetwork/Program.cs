@@ -50,7 +50,7 @@ app.MapGet("/", () => "Hello World!");
 
 app.MapPost("api/adduser", async (UserInputDto inputUser,IUserService userService) =>
 {
-    var newUser = await userService.AddUser(inputUser.FirstName, inputUser.LastName, inputUser.Birthday);
+    var newUser = await userService.AddUser(inputUser);
     return Results.Created($"api/adduser/{newUser.Id}", newUser);
 });
 
@@ -60,12 +60,4 @@ app.MapPost("api/publications", async (PublicationInputDto publication, IUserSer
 
     return Results.Created($"api/publications/{newPublication.Id}",newPublication);
 });
-
-app.MapPost("api/getpublications", async (Guid curUserId, Guid userId, IUserService userService) =>
-{
-    var listPublication = await userService.GetListPublications(curUserId, userId);
-
-    return Results.Created($"api/getpublications/", listPublication);
-});
-
 app.Run();

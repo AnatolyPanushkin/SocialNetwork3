@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using SocialNetwork.Application.DTOs;
 using SocialNetwork.Domain.Aggregates;
 using SocialNetwork.Domain.Aggregates.UserAggregate;
 using SocialNetwork.Domain.Common;
@@ -15,12 +16,9 @@ public class UserService : IUserService
         _context = context;
     }
 
-    public async Task<User> AddUser(string firstName, string lastName, DateOnly birthday)
+    public async Task<User> AddUser(UserInputDto userInputDto)
     {
-        var userName = new UserName(firstName, lastName);
-        var userBirthday = new Birthday(birthday);
-
-        var user = new User(userName, userBirthday);
+        var user = User.AddUser(userInputDto.FirstName, userInputDto.LastName, userInputDto.Birthday);
 
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();

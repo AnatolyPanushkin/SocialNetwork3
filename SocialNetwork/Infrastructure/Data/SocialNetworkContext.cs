@@ -30,7 +30,7 @@ namespace SocialNetwork.Infrastructure.Data
 
             modelBuilder.Entity<User>().Property(r => r.Id).ValueGeneratedNever();
             modelBuilder.Entity<Publication>().Property(r => r.Id).ValueGeneratedNever();
-
+            
             modelBuilder.Entity<User>().OwnsOne(x => x.UserName,
                 a =>
                 {
@@ -52,20 +52,10 @@ namespace SocialNetwork.Infrastructure.Data
             modelBuilder.Entity<User>().OwnsOne(x => x.Birthday,
                 a =>
                 {
-                    a.Property(p => p.Date)
-                        .HasColumnName(nameof(User.Birthday))
+                    a.Property(p => p.BirthDate)
+                        .HasColumnName(nameof(User.Birthday.BirthDate))
                         .IsRequired();
                 });
-
-            modelBuilder.Entity<User>()
-                .HasMany(user => user.Publications)
-                .WithOne(publication => publication.User);
-
-            modelBuilder.Entity<UsersFriends>(entity =>
-            {
-                entity.HasKey(source => new { source.UserId, source.UsersFriendId });
-            });
-
         }
     }
 }

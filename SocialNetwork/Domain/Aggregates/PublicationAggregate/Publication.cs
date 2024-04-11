@@ -1,7 +1,7 @@
 ﻿using SocialNetwork.Domain.Aggregates.UserAggregate;
 using SocialNetwork.Domain.Entities;
 
-namespace SocialNetwork.Domain.Aggregates;
+namespace SocialNetwork.Domain.Aggregates.PublicationAggregate;
 
 public class Publication : Entity
 {
@@ -25,4 +25,11 @@ public class Publication : Entity
         MediaContent = mediaContent?? throw new ArgumentNullException(nameof(mediaContent));
         this.User = user ?? throw new ArgumentNullException(nameof(user));
     }
+
+    public Publication AddNewPublication()
+    {
+        return new Publication();
+    }
+    
+    
 }

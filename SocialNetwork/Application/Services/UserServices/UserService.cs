@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using SocialNetwork.Application.DTOs;
 using SocialNetwork.Domain.Aggregates;
+using SocialNetwork.Domain.Aggregates.PublicationAggregate;
 using SocialNetwork.Domain.Aggregates.UserAggregate;
 using SocialNetwork.Domain.Common;
 using SocialNetwork.Infrastructure.Data;

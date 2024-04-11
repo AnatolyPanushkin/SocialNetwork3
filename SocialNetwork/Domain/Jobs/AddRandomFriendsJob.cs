@@ -22,39 +22,13 @@ namespace SocialNetwork.Domain.Jobs
 
             foreach (var user in usersList)
             {
-                while (true)
+                var randomUser = usersList[new Random().Next(usersList.Count())];
+                
+                var randomFriendsOfUser = _context.RandomFriends.Where(randFriends => randFriends.User == user.Id).Select(randFriends => randFriends.RandomFriendOfUser).ToList();
+                
+                if (randomUser is not null && user.Id != randomUser.Id && !randomFriendsOfUser.Contains(randomUser.Id))
                 {
-                    var randomUser = usersList[new Random().Next(usersList.Count())];
-
-                    var usersRandomFriends = _context.RandomFriends.Where(randFriends => randFriends.User == user.Id).Select(randFriends => randFriends.RandomFriendOfUser).ToList();
-
-                    if (randomUser is not null && user.Id != randomUser.Id)
-                    {
-                        if (!usersRandomFriends.Contains(randomUser.Id))
-                        {
-                            var newRandomFriend = new RandomFriend(user.Id.ToString(), randomUser.Id.ToString());
-
-                            await _context.RandomFriends.AddAsync(newRandomFriend);
-                            await _context.SaveChangesAsync();
-
-                            break;
-                        }
-                        else
-                        {
-                            var randomFriendItem = _context.RandomFriends.FirstOrDefault(randFriend => randFriend.User == user.Id && randFriend.RandomFriendOfUser == randomUser.Id);
-                            if (randomFriendItem.ExpirationTime <= ToDateOnly(DateTime.Now))
-                            {
-                                var newRandomFriend = new RandomFriend(user.Id.ToString(), randomUser.Id.ToString());
-
-                                _context.RandomFriends.Update(newRandomFriend);
-
-                                await _context.SaveChangesAsync();
-
-                                break;
-                            }
-                        }
-                    }
-
+                    
                 }
             }
         }
@@ -86,3 +60,39 @@ namespace SocialNetwork.Domain.Jobs
         }
     }
 }
+
+
+/*while (true)
+{
+    var randomUser = usersList[new Random().Next(usersList.Count())];
+
+    var usersRandomFriends = _context.RandomFriends.Where(randFriends => randFriends.User == user.Id).Select(randFriends => randFriends.RandomFriendOfUser).ToList();
+
+    if (randomUser is not null && user.Id != randomUser.Id)
+    {
+        if (!usersRandomFriends.Contains(randomUser.Id))
+        {
+            var newRandomFriend = new RandomFriend(user.Id.ToString(), randomUser.Id.ToString());
+
+            await _context.RandomFriends.AddAsync(newRandomFriend);
+            await _context.SaveChangesAsync();
+
+            break;
+        }
+        else
+        {
+            var randomFriendItem = _context.RandomFriends.FirstOrDefault(randFriend => randFriend.User == user.Id && randFriend.RandomFriendOfUser == randomUser.Id);
+            if (randomFriendItem.ExpirationTime <= ToDateOnly(DateTime.Now))
+            {
+                var newRandomFriend = new RandomFriend(user.Id.ToString(), randomUser.Id.ToString());
+
+                _context.RandomFriends.Update(newRandomFriend);
+
+                await _context.SaveChangesAsync();
+
+                break;
+            }
+        }
+    }
+
+}*/

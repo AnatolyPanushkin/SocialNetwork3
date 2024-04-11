@@ -1,5 +1,6 @@
 ﻿using SocialNetwork.Application.DTOs;
 using SocialNetwork.Domain.Aggregates;
+using SocialNetwork.Domain.Aggregates.PublicationAggregate;
 using SocialNetwork.Domain.Aggregates.UserAggregate;
 
 namespace SocialNetwork.Application.Services.UserServices;

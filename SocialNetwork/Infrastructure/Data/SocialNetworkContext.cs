@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Domain.Aggregates;
+using SocialNetwork.Domain.Aggregates.PublicationAggregate;
 using SocialNetwork.Domain.Aggregates.UserAggregate;
 
 namespace SocialNetwork.Infrastructure.Data

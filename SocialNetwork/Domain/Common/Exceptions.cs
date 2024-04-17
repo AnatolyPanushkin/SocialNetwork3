@@ -33,3 +33,10 @@ public class ContentLenghtIsTooLong : BadRequestException
     {
     }
 }
+
+public class AvailableRandomFriendsNotFound : BadRequestException
+{
+    public AvailableRandomFriendsNotFound() : base("There are no friends available for assignment")
+    {
+    }
+}

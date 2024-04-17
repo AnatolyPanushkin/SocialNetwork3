@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration.UserSecrets;
 using Quartz;
 using Quartz.Impl;
 using SocialNetwork.Domain.Aggregates;
+using SocialNetwork.Domain.Common;
 using SocialNetwork.Infrastructure.Data;
 
 namespace SocialNetwork.Domain.Jobs
@@ -23,10 +24,18 @@ namespace SocialNetwork.Domain.Jobs
 
             foreach (var user in usersList)
             {
-                var randomFriendsOfUser = await _context.RandomFriends.Where(randFriends => randFriends.User == user.Id).Select(randFriends => randFriends.RandomFriendOfUser).ToListAsync();
+                var randomFriendsOfUser = await _context.RandomFriends.Where(randFriends => randFriends.User == user.Id)
+                    .Select(randFriends => randFriends.RandomFriendOfUser).ToListAsync();
 
-                var randomUsersList = usersList.Where(u => u.Id != user.Id && !randomFriendsOfUser.Contains(u.Id)).ToList();
-                var randomUser = randomUsersList[new Random().Next(usersList.Count())];
+                var randomUsersList = usersList.Where(u => u.Id != user.Id && !randomFriendsOfUser.Contains(u.Id))
+                    .ToList();
+
+                if (!randomUsersList.Any())
+                {
+                    throw new AvailableRandomFriendsNotFound();
+                }
+
+                var randomUser = randomUsersList[new Random().Next(randomUsersList.Count())];
                 
                 var newRandomFriend = new RandomFriend(user.Id.ToString(), randomUser.Id.ToString());
                 var newFriendForRandom = new RandomFriend(randomUser.Id.ToString(),user.Id.ToString());
@@ -55,7 +64,7 @@ namespace SocialNetwork.Domain.Jobs
                 .WithIdentity("trigger1", "group1")
                 .StartNow()
                 .WithSimpleSchedule(x => x
-                    .WithIntervalInHours(24)
+                    .WithIntervalInMinutes(1)
                     .RepeatForever())
                 .Build();
 

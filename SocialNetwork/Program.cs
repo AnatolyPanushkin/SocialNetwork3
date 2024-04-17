@@ -31,7 +31,7 @@ builder.Services.AddQuartz(q =>
         .ForJob(AddRandomFriendsJob.Key)
         .WithIdentity("AddRandomFriendsJob-startTrigger")
         .WithSimpleSchedule(x => x
-            .WithIntervalInHours(24)
+            .WithIntervalInMinutes(1)
             .RepeatForever())
         .StartNow()
     );

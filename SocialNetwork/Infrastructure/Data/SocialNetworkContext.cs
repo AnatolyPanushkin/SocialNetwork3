@@ -57,6 +57,14 @@ namespace SocialNetwork.Infrastructure.Data
                         .HasColumnName(nameof(User.Birthday.BirthDate))
                         .IsRequired();
                 });
+            
+            modelBuilder.Entity<Publication>().OwnsOne(x => x.TextContent,
+                a =>
+                {
+                    a.Property(p => p.Content)
+                        .HasColumnName(nameof(Publication.TextContent))
+                        .IsRequired();
+                });
         }
     }
 }

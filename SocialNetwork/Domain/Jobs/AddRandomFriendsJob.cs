@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration.UserSecrets;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using Quartz;
 using Quartz.Impl;
 using SocialNetwork.Domain.Aggregates;
@@ -22,14 +23,16 @@ namespace SocialNetwork.Domain.Jobs
 
             foreach (var user in usersList)
             {
-                var randomUser = usersList[new Random().Next(usersList.Count())];
+                var randomFriendsOfUser = await _context.RandomFriends.Where(randFriends => randFriends.User == user.Id).Select(randFriends => randFriends.RandomFriendOfUser).ToListAsync();
+
+                var randomUsersList = usersList.Where(u => u.Id != user.Id && !randomFriendsOfUser.Contains(u.Id)).ToList();
+                var randomUser = randomUsersList[new Random().Next(usersList.Count())];
                 
-                var randomFriendsOfUser = _context.RandomFriends.Where(randFriends => randFriends.User == user.Id).Select(randFriends => randFriends.RandomFriendOfUser).ToList();
-                
-                if (randomUser is not null && user.Id != randomUser.Id && !randomFriendsOfUser.Contains(randomUser.Id))
-                {
-                    
-                }
+                var newRandomFriend = new RandomFriend(user.Id.ToString(), randomUser.Id.ToString());
+                var newFriendForRandom = new RandomFriend(randomUser.Id.ToString(),user.Id.ToString());
+                await _context.RandomFriends.AddAsync(newRandomFriend);
+                await _context.RandomFriends.AddAsync(newFriendForRandom);
+                await _context.SaveChangesAsync();
             }
         }
 

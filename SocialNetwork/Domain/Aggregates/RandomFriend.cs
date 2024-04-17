@@ -18,10 +18,8 @@ namespace SocialNetwork.Domain.Aggregates
         {
             User = user is null ? throw new UserNotFound() : Guid.Parse(user);
             RandomFriendOfUser = randomFriendOfUser is null ? throw new ArgumentNullException() : Guid.Parse(randomFriendOfUser);
-            ExpirationTime = ToDateOnly(DateTime.Now.AddDays(180));
+            ExpirationTime = ToDateOnly(DateTime.Now.AddDays(180)); 
         }
-
-        
         public static DateOnly ToDateOnly(DateTime dateTime)
         {
             return new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);

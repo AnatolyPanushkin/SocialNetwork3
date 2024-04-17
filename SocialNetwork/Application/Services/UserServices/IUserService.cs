@@ -8,5 +8,5 @@ namespace SocialNetwork.Application.Services.UserServices;
 public interface IUserService
 {
     public Task<User> AddUser(UserInputDto userInputDto);
-    public Task<Publication> AddPublication(string textContent, string mediaContent, Guid userId);
+    public Task<Publication> AddPublication(PublicationInputDto publicationInputDto);
 }

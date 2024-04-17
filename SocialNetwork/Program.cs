@@ -54,10 +54,11 @@ app.MapPost("api/adduser", async (UserInputDto inputUser,IUserService userServic
     return Results.Created($"api/adduser/{newUser.Id}", newUser);
 });
 
-app.MapPost("api/publications", async (PublicationInputDto publication, IUserService userService) =>
+app.MapPost("api/publications", async (PublicationInputDto publicationInputDto, IUserService userService) =>
 {
-    var newPublication = await userService.AddPublication(publication.TextContent, publication.MediaContent, publication.UserGuidId);
+    var newPublication = await userService.AddPublication(publicationInputDto);
 
     return Results.Created($"api/publications/{newPublication.Id}",newPublication);
 });
+
 app.Run();

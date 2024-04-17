@@ -3,7 +3,6 @@
 public class PublicationDto
 {
 }
-
 public class PublicationInputDto
 {
     public string TextContent { get; set; }

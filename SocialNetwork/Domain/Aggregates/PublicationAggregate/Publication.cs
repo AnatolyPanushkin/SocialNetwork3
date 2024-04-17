@@ -1,24 +1,25 @@
 ﻿using SocialNetwork.Domain.Aggregates.UserAggregate;
+using SocialNetwork.Domain.Common;
 using SocialNetwork.Domain.Entities;
 
 namespace SocialNetwork.Domain.Aggregates.PublicationAggregate;
 
 public class Publication : Entity
 {
-    public string TextContent { get; private set; }
+    public TextContent TextContent { get; private set; }
     public string MediaContent { get; private set; }
 
     public User User { get; }
 
     private Publication() {}
     
-    public Publication(string textContent, string mediaContent)
+    public Publication(TextContent textContent, string mediaContent)
     {
         Id = new Guid();
         TextContent = textContent?? throw new ArgumentNullException(nameof(textContent));
         MediaContent = mediaContent?? throw new ArgumentNullException(nameof(mediaContent));
     }
-    public Publication(string textContent, string mediaContent, User user)
+    public Publication(TextContent textContent, string mediaContent, User user)
     {
         Id = new Guid();
         TextContent = textContent?? throw new ArgumentNullException(nameof(textContent));
@@ -26,10 +27,14 @@ public class Publication : Entity
         this.User = user ?? throw new ArgumentNullException(nameof(user));
     }
 
-    public Publication AddNewPublication()
+    public static Publication AddNewPublication(User user, string textContent, string mediaContent)
     {
-        return new Publication();
+        if (user is null) throw new UserNotFound();
+
+        var newTextContent = new TextContent(textContent);
+        
+        var newPublication = new Publication(newTextContent, mediaContent, user);
+        
+        return newPublication;
     }
-    
-    
 }

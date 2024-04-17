@@ -27,28 +27,15 @@ public class UserService : IUserService
         return user;
     }
 
-    public async Task<Publication> AddPublication(string textContent, string mediaContent, Guid userId)
+    public async Task<Publication> AddPublication(PublicationInputDto publicationInputDto)
     {
-        var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+        var user = _context.Users.FirstOrDefault(u => u.Id == publicationInputDto.UserGuidId);
 
-        if (user is null) throw new UserNotFound();
-
-        var newPublication = new Publication(textContent, mediaContent, user);
+        var newPublication = Publication.AddNewPublication(user, publicationInputDto.TextContent, publicationInputDto.MediaContent);
 
         await _context.Publications.AddAsync(newPublication);
         await _context.SaveChangesAsync();
 
         return newPublication;
-    }
-
-    public async Task<User> AddFriend(Guid currentUserId, Guid userId)
-    {
-        var user = _context.Users.FirstOrDefault(u => u.Id == userId);
-        if (user is null) throw new UserNotFound();
-
-        await _context.Users.AddAsync(user);
-        await _context.SaveChangesAsync();
-
-        return user;
     }
 }

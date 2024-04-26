@@ -1,4 +1,5 @@
-﻿using SocialNetwork.Domain.Entities;
+﻿using SocialNetwork.Domain.Aggregates.PublicationAggregate;
+using SocialNetwork.Domain.Entities;
 
 namespace SocialNetwork.Domain.Aggregates.UserAggregate;
 
@@ -7,8 +8,8 @@ public class User : Entity
     public UserName UserName { get; private set; }
     public Birthday Birthday { get; private set; }
 
-    private List<Guid> _publications;
-    public IReadOnlyCollection<Guid> Publications => _publications.AsReadOnly();
+    private List<Publication> _publications;
+    public IReadOnlyCollection<Publication> Publications => _publications.AsReadOnly();
 
     private User() { }
 

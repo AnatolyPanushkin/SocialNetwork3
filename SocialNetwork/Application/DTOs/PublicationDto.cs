@@ -1,8 +1,9 @@
-﻿namespace SocialNetwork.Application.DTOs;
+﻿using SocialNetwork.Domain.Aggregates.PublicationAggregate;
 
-public class PublicationDto
-{
-}
+namespace SocialNetwork.Application.DTOs;
+
+public record PublicationDto(string Id, TextContent TextContent, string MediaContent);
+
 public class PublicationInputDto
 {
     public string TextContent { get; set; }

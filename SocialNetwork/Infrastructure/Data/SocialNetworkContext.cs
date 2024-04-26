@@ -31,6 +31,13 @@ namespace SocialNetwork.Infrastructure.Data
 
             modelBuilder.Entity<User>().Property(r => r.Id).ValueGeneratedNever();
             modelBuilder.Entity<Publication>().Property(r => r.Id).ValueGeneratedNever();
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity
+                    .HasMany(user => user.Publications)
+                    .WithOne(publication => publication.User);
+            });
             
             modelBuilder.Entity<User>().OwnsOne(x => x.UserName,
                 a =>

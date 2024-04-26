@@ -1,6 +1,10 @@
+using System.Reflection;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 using SocialNetwork.Application.DTOs;
+using SocialNetwork.Application.Features.GettingPublication;
+using SocialNetwork.Application.Services.PublicationService;
 using SocialNetwork.Application.Services.UserServices;
 using SocialNetwork.Domain.Aggregates;
 using SocialNetwork.Domain.Jobs;
@@ -20,6 +24,10 @@ builder.Services.AddDbContext<SocialNetworkContext>(options =>
 //dotnet ef database update
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPublicationService, PublicationService>();
+
+// Add MediatR
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
 builder.Services.AddQuartz(q =>
 {
@@ -48,17 +56,19 @@ if (app.Environment.IsDevelopment())
 
 app.MapGet("/", () => "Hello World!");
 
-app.MapPost("api/adduser", async (UserInputDto inputUser,IUserService userService) =>
+app.MapPost("api/addUser", async (UserInputDto inputUser,IUserService userService) =>
 {
     var newUser = await userService.AddUser(inputUser);
-    return Results.Created($"api/adduser/{newUser.Id}", newUser);
+    return Results.Created($"api/addUser/{newUser.Id}", newUser);
 });
 
-app.MapPost("api/publications", async (PublicationInputDto publicationInputDto, IUserService userService) =>
+app.MapPost("api/addPublications", async (PublicationInputDto publicationInputDto, IUserService userService) =>
 {
     var newPublication = await userService.AddPublication(publicationInputDto);
 
-    return Results.Created($"api/publications/{newPublication.Id}",newPublication);
+    return Results.Created($"api/addPublications/{newPublication.Id}", newPublication);
 });
+
+app.MapGet("api/getPublication", async (IMediator mediator)=> await mediator.Send(new GetPublication()));
 
 app.Run();

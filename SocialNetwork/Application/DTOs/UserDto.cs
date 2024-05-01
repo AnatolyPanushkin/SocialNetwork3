@@ -1,9 +1,8 @@
 ﻿namespace SocialNetwork.Application.DTOs;
 
-public class UserDto
-{
+public record UserDto(string FirstName, string LastName, string Birthday, string Email);
 
-}
+public record ApproveEmailUserDto(string Email);
 
 public class UserInputDto
 {

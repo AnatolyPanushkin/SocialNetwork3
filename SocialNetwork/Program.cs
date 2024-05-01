@@ -1,4 +1,5 @@
 using System.Reflection;
+using Confluent.Kafka;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
@@ -7,6 +8,7 @@ using SocialNetwork.Application.Features.GettingPublication;
 using SocialNetwork.Application.Services.PublicationService;
 using SocialNetwork.Application.Services.UserServices;
 using SocialNetwork.Domain.Aggregates;
+using SocialNetwork.Domain.Events.AddNewUser;
 using SocialNetwork.Domain.Jobs;
 using SocialNetwork.Infrastructure.Data;
 
@@ -46,6 +48,24 @@ builder.Services.AddQuartz(q =>
 });
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
+//-------------Add Kafka--------------------//
+var producerConfig = new ProducerConfig
+{
+    BootstrapServers = $"localhost:29092",
+    ClientId = "emailApprover-producer"
+};
+
+var consumerConfig = new ConsumerConfig
+{
+    BootstrapServers = $"localhost:29092",
+    GroupId = "emailApprover-consumer",
+    AutoOffsetReset = AutoOffsetReset.Earliest
+};
+
+builder.Services.AddSingleton(new ProducerBuilder<string, string>(producerConfig).Build());
+builder.Services.AddSingleton(new ConsumerBuilder<string, string>(consumerConfig).Build());
+//------------------------------------------//
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -56,10 +76,9 @@ if (app.Environment.IsDevelopment())
 
 app.MapGet("/", () => "Hello World!");
 
-app.MapPost("api/addUser", async (UserInputDto inputUser,IUserService userService) =>
+app.MapPost("api/addUser", async (UserDto userDto,IUserService userService, IMediator mediator) =>
 {
-    var newUser = await userService.AddUser(inputUser);
-    return Results.Created($"api/addUser/{newUser.Id}", newUser);
+    await mediator.Send(new AddUserCommand(userDto));
 });
 
 app.MapPost("api/addPublications", async (PublicationInputDto publicationInputDto, IUserService userService) =>

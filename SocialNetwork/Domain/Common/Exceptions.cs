@@ -40,3 +40,10 @@ public class AvailableRandomFriendsNotFound : BadRequestException
     {
     }
 }
+
+public class InvalidEmailAddress : BadRequestException
+{
+    public InvalidEmailAddress() : base("Invalid email address")
+    {
+    }
+}

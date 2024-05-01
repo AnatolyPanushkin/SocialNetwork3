@@ -7,6 +7,7 @@ public class User : Entity
 {
     public UserName UserName { get; private set; }
     public Birthday Birthday { get; private set; }
+    public EmailAddress Email { get; set; }
 
     private List<Publication> _publications;
     public IReadOnlyCollection<Publication> Publications => _publications.AsReadOnly();
@@ -18,6 +19,15 @@ public class User : Entity
         Id = Guid.NewGuid();
         UserName = userName;
         Birthday = birthday;
+        _publications = new();
+    }
+    
+    public User(UserName userName, Birthday birthday, EmailAddress email) : this()
+    {
+        Id = Guid.NewGuid();
+        UserName = userName;
+        Birthday = birthday;
+        Email = email;
         _publications = new();
     }
 

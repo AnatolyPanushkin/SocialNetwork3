@@ -65,6 +65,15 @@ namespace SocialNetwork.Infrastructure.Data
                         .IsRequired();
                 });
             
+            modelBuilder.Entity<User>().OwnsOne(x => x.Email,
+                a =>
+                {
+                    a.Property(p => p.Email)
+                        .HasColumnName(nameof(User.Email))
+                        .HasMaxLength(50)
+                        .IsRequired();
+                });
+            
             modelBuilder.Entity<Publication>().OwnsOne(x => x.TextContent,
                 a =>
                 {

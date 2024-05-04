@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Application.DTOs;
 using SocialNetwork.Domain.Aggregates;
 using SocialNetwork.Domain.Aggregates.PublicationAggregate;
@@ -17,14 +18,24 @@ public class UserService : IUserService
         _context = context;
     }
 
-    public async Task<User> AddUser(UserInputDto userInputDto)
+    public async Task<User> AddUser(UserInputWithEmailDto userDto)
     {
-        var user = User.AddUser(userInputDto.FirstName, userInputDto.LastName, userInputDto.Birthday);
+        var user = new User(userDto.FirstName,userDto.LastName, userDto.Birthday, userDto.Email);
 
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
 
         return user;
+    }
+
+    public async Task ApproveEmail(string Id)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == Guid.Parse(Id));
+
+        var approvedUser = User.ApproveEmail(user);
+
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
     }
 
     public async Task<Publication> AddPublication(PublicationInputDto publicationInputDto)

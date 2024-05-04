@@ -11,6 +11,8 @@ public class User : Entity
 
     private List<Publication> _publications;
     public IReadOnlyCollection<Publication> Publications => _publications.AsReadOnly();
+    
+    public bool ApprovedEmail { get; private set; }
 
     private User() { }
 
@@ -31,6 +33,16 @@ public class User : Entity
         _publications = new();
     }
 
+    public User(string firstName, string lastName, string birthday, string email)
+    {
+        Id = Guid.NewGuid();
+        UserName = new UserName(firstName, lastName);
+        Birthday = new Birthday(birthday);
+        Email = new EmailAddress(email);
+        _publications = new();
+        ApprovedEmail = false;
+    }
+
     public static User AddUser(string firstName, string lastName, string birthday)
     {
         var userName = new UserName(firstName, lastName);
@@ -39,5 +51,12 @@ public class User : Entity
         var newUser = new User(userName,userBirthday);
                         
         return newUser;
+    }
+
+    public static User ApproveEmail(User user)
+    {
+        user.ApprovedEmail = true;
+
+        return user;
     }
 }

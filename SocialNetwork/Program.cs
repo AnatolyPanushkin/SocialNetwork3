@@ -7,7 +7,6 @@ using SocialNetwork.Application.DTOs;
 using SocialNetwork.Application.Features.GettingPublication;
 using SocialNetwork.Application.Services.PublicationService;
 using SocialNetwork.Application.Services.UserServices;
-using SocialNetwork.Domain.Aggregates;
 using SocialNetwork.Domain.Events.AddNewUser;
 using SocialNetwork.Domain.Jobs;
 using SocialNetwork.Infrastructure.Data;
@@ -46,25 +45,31 @@ builder.Services.AddQuartz(q =>
         .StartNow()
     );
 });
+
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 //-------------Add Kafka--------------------//
 var producerConfig = new ProducerConfig
 {
     BootstrapServers = $"localhost:29092",
-    ClientId = "emailApprover-producer"
+    ClientId = "addNewUser"
 };
 
 var consumerConfig = new ConsumerConfig
 {
     BootstrapServers = $"localhost:29092",
-    GroupId = "emailApprover-consumer",
+    GroupId = "addNewUser-consumer",
     AutoOffsetReset = AutoOffsetReset.Earliest
 };
 
 builder.Services.AddSingleton(new ProducerBuilder<string, string>(producerConfig).Build());
 builder.Services.AddSingleton(new ConsumerBuilder<string, string>(consumerConfig).Build());
 //------------------------------------------//
+
+//------------AddApproveEmailConsumer------------//
+//builder.Services.AddHostedService<ApprovedEmailConsumer>();
+builder.Services.AddHostedService<ApproveEmailScopedServiceHostedService>();
+builder.Services.AddScoped<IScopedApprovedEmailService, ScopedApprovedEmailService>();
 
 var app = builder.Build();
 
@@ -76,7 +81,7 @@ if (app.Environment.IsDevelopment())
 
 app.MapGet("/", () => "Hello World!");
 
-app.MapPost("api/addUser", async (UserDto userDto,IUserService userService, IMediator mediator) =>
+app.MapPost("api/addUser", async (UserInputWithEmailDto userDto, IMediator mediator) =>
 {
     await mediator.Send(new AddUserCommand(userDto));
 });

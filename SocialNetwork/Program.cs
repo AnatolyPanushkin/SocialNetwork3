@@ -30,12 +30,13 @@ builder.Services.AddScoped<IPublicationService, PublicationService>();
 // Add MediatR
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
+#region Jobs
+//Add random friend job
 builder.Services.AddQuartz(q =>
 {
     q.UseMicrosoftDependencyInjectionJobFactory();
     // Just use the name of your job that you created in the Jobs folder.
     q.AddJob<AddRandomFriendsJob>(AddRandomFriendsJob.Key);
-
     q.AddTrigger(opts => opts
         .ForJob(AddRandomFriendsJob.Key)
         .WithIdentity("AddRandomFriendsJob-startTrigger")
@@ -44,10 +45,27 @@ builder.Services.AddQuartz(q =>
             .RepeatForever())
         .StartNow()
     );
+    
 });
-
+//Add email approve consumer job
+builder.Services.AddQuartz(q =>
+{
+    q.UseMicrosoftDependencyInjectionJobFactory();
+    // Just use the name of your job that you created in the Jobs folder.
+    q.AddJob<ApprovedEmailConsumer>(ApprovedEmailConsumer.Key);
+    q.AddTrigger(opts => opts
+        .ForJob(ApprovedEmailConsumer.Key)
+        .WithIdentity("AproveEmailConsumer-startTrigger")
+        .WithSimpleSchedule(x => x
+            .WithIntervalInSeconds(1)
+            .RepeatForever())
+        .StartNow()
+    );
+});
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+#endregion
 
+#region Kafka
 //-------------Add Kafka--------------------//
 var producerConfig = new ProducerConfig
 {
@@ -65,11 +83,13 @@ var consumerConfig = new ConsumerConfig
 builder.Services.AddSingleton(new ProducerBuilder<string, string>(producerConfig).Build());
 builder.Services.AddSingleton(new ConsumerBuilder<string, string>(consumerConfig).Build());
 //------------------------------------------//
+#endregion
+
 
 //------------AddApproveEmailConsumer------------//
 //builder.Services.AddHostedService<ApprovedEmailConsumer>();
-builder.Services.AddHostedService<ApproveEmailScopedServiceHostedService>();
-builder.Services.AddScoped<IScopedApprovedEmailService, ScopedApprovedEmailService>();
+//builder.Services.AddHostedService<ApproveEmailScopedServiceHostedService>();
+//builder.Services.AddScoped<IScopedApprovedEmailService, ScopedApprovedEmailService>();
 
 var app = builder.Build();
 
@@ -84,6 +104,11 @@ app.MapGet("/", () => "Hello World!");
 app.MapPost("api/addUser", async (UserInputWithEmailDto userDto, IMediator mediator) =>
 {
     await mediator.Send(new AddUserCommand(userDto));
+});
+
+app.MapPost("api/reportUser", async (IMediator mediator) =>
+{
+    
 });
 
 app.MapPost("api/addPublications", async (PublicationInputDto publicationInputDto, IUserService userService) =>

@@ -1,10 +1,71 @@
 ﻿using Confluent.Kafka;
 using MediatR;
+using Quartz;
+using Quartz.Impl;
 using SocialNetwork.Domain.Events.ApprovedEmail;
 
 namespace SocialNetwork.Domain.Jobs;
 
-internal interface IScopedApprovedEmailService
+public class ApprovedEmailConsumer : IJob
+{
+    private readonly string _topic = "ApprovedEmail-events";
+    private readonly IMediator _mediator;
+    public static readonly JobKey Key = new JobKey("ApprovedEmailConsumer");
+
+    public ApprovedEmailConsumer(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
+    public Task Execute(IJobExecutionContext context)
+    {
+        var consumerApprovedEmailConfig = new ConsumerConfig
+        {
+            BootstrapServers = $"localhost:29092",
+            GroupId = "ApprovedEmail-consumer",
+            AutoOffsetReset = AutoOffsetReset.Earliest
+        };
+
+        using (var builder = new ConsumerBuilder<Ignore,string>(consumerApprovedEmailConfig).Build())
+        {
+            builder.Subscribe(_topic);
+            var cancelToken = new CancellationTokenSource();
+            try
+            {
+                var consumer = builder.Consume(cancelToken.Token);
+                _mediator.Send(new ApprovedEmailCommand(consumer.Message.Value));
+            }
+            catch (Exception)
+            {
+                builder.Close();
+            }
+        }
+
+        return Task.CompletedTask;
+    }
+}
+public class ApprovedEmailTransactionScheduler
+{
+    public static async Task Start()
+    {
+        IScheduler scheduler = await StdSchedulerFactory.GetDefaultScheduler();
+        await scheduler.Start();
+
+        IJobDetail ApprovedEmailJob = JobBuilder.Create<ApprovedEmailConsumer>().Build();
+
+        ITrigger ApprovedEmailTrigger = TriggerBuilder.Create()
+            .WithIdentity("trigger1", "group1")
+            .StartNow()
+            .WithSimpleSchedule(x => x
+                .WithIntervalInSeconds(1)
+                .RepeatForever())
+            .Build();
+
+        await scheduler.ScheduleJob(ApprovedEmailJob, ApprovedEmailTrigger);
+    }
+}
+
+/*internal interface IScopedApprovedEmailService
 {
     void ApproveEmail(CancellationToken stoppingToken);
 }
@@ -54,7 +115,7 @@ public class ApproveEmailScopedServiceHostedService : BackgroundService
 
     public IServiceProvider Services { get; }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+      protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         await DoWork(stoppingToken);
     }
@@ -131,4 +192,4 @@ public class ApprovedEmailConsumer : IHostedService, IDisposable
             }
         }
     }
-}
+}*/

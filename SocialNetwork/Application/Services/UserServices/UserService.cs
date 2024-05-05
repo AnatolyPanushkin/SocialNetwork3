@@ -34,7 +34,17 @@ public class UserService : IUserService
 
         var approvedUser = User.ApproveEmail(user);
 
-        _context.Users.Update(user);
+        _context.Users.Update(approvedUser);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task ReportUser(ReportUserDto reportUserDto)
+    {
+        var reportedUser = _context.Users.FirstOrDefault(u => u.Id == Guid.Parse(reportUserDto.ReportedUserId));
+        
+        var result = User.ReportUser(reportedUser);
+        
+        _context.Users.Update(result);
         await _context.SaveChangesAsync();
     }
 

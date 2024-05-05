@@ -18,3 +18,9 @@ public class UserInputWithEmailDto
     public string Birthday { get; set; }
     public string Email { get; set; }
 }
+
+public class ReportUserDto
+{
+    public string UserId { get; set; }
+    public string ReportedUserId { get; set; }
+}

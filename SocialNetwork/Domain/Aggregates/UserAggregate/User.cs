@@ -1,4 +1,5 @@
 ﻿using SocialNetwork.Domain.Aggregates.PublicationAggregate;
+using SocialNetwork.Domain.Common;
 using SocialNetwork.Domain.Entities;
 
 namespace SocialNetwork.Domain.Aggregates.UserAggregate;
@@ -13,6 +14,8 @@ public class User : Entity
     public IReadOnlyCollection<Publication> Publications => _publications.AsReadOnly();
     
     public bool ApprovedEmail { get; private set; }
+    
+    public bool IsBanned { get; private set; }
 
     private User() { }
 
@@ -41,6 +44,7 @@ public class User : Entity
         Email = new EmailAddress(email);
         _publications = new();
         ApprovedEmail = false;
+        IsBanned = false;
     }
 
     public static User AddUser(string firstName, string lastName, string birthday)
@@ -58,5 +62,17 @@ public class User : Entity
         user.ApprovedEmail = true;
 
         return user;
+    }
+
+    public static User ReportUser(User? reportedUser)
+    {
+        if (reportedUser is null)
+        {
+            throw new UserNotFound();
+        }
+        
+        reportedUser.IsBanned = true;
+
+        return reportedUser;
     }
 }

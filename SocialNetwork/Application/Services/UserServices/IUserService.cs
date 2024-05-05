@@ -9,5 +9,6 @@ public interface IUserService
 {
     public Task<User> AddUser(UserInputWithEmailDto userDto);
     public Task ApproveEmail(string Id);
+    public Task ReportUser(ReportUserDto reportUserDto);
     public Task<Publication> AddPublication(PublicationInputDto publicationInputDto);
 }

@@ -9,8 +9,9 @@ public class Publication : Entity
 {
     public TextContent TextContent { get; private set; }
     public string MediaContent { get; private set; }
-    
-    public User User { get; }
+
+    public Guid UserId { get; private set; }
+    public User? User { get; set; }
 
     private Publication() {}
     
@@ -27,15 +28,37 @@ public class Publication : Entity
         MediaContent = mediaContent?? throw new ArgumentNullException(nameof(mediaContent));
         this.User = user ?? throw new ArgumentNullException(nameof(user));
     }
-
-    public static Publication AddNewPublication(User user, string textContent, string mediaContent)
+    public Publication(TextContent textContent, string mediaContent, Guid userId)
     {
-        if (user is null) throw new UserNotFound();
+        Id = Guid.NewGuid();
+        TextContent = textContent ?? throw new ArgumentNullException(nameof(textContent));
+        MediaContent = mediaContent ?? throw new ArgumentNullException(nameof(mediaContent));
+        this.UserId = userId;
+    }
+
+    /*    public static Publication AddNewPublication(User user, string textContent, string mediaContent)
+        {
+            if (user is null) throw new UserNotFound();
+
+            var newTextContent = new TextContent(textContent);
+
+            var newPublication = new Publication(newTextContent, mediaContent, user);
+
+            return newPublication;
+        }*/
+
+    public static Publication AddNewPublication(string userId, string textContent, string mediaContent)
+    {
+        //Добавить проверку Guid
+        //if (userId. ) throw new UserNotFound();
+
+        var newUserGuid = Guid.NewGuid();
+        if (!Guid.TryParse(userId, out newUserGuid)) throw new UserNotFound();
 
         var newTextContent = new TextContent(textContent);
-        
-        var newPublication = new Publication(newTextContent, mediaContent, user);
-        
+
+        var newPublication = new Publication(newTextContent, mediaContent, newUserGuid);
+
         return newPublication;
     }
 

@@ -10,8 +10,7 @@ public class User : Entity
     public Birthday Birthday { get; private set; }
     public EmailAddress Email { get; set; }
 
-    private List<Publication> _publications;
-    public IReadOnlyCollection<Publication> Publications => _publications.AsReadOnly();
+    public virtual ICollection<Publication> Publications { get; set; }
     
     public bool ApprovedEmail { get; private set; }
     
@@ -24,7 +23,7 @@ public class User : Entity
         Id = Guid.NewGuid();
         UserName = userName;
         Birthday = birthday;
-        _publications = new();
+        //_publications = new();
     }
     
     public User(UserName userName, Birthday birthday, EmailAddress email) : this()
@@ -33,7 +32,7 @@ public class User : Entity
         UserName = userName;
         Birthday = birthday;
         Email = email;
-        _publications = new();
+       // _publications = new();
     }
 
     public User(string firstName, string lastName, string birthday, string email)
@@ -42,7 +41,7 @@ public class User : Entity
         UserName = new UserName(firstName, lastName);
         Birthday = new Birthday(birthday);
         Email = new EmailAddress(email);
-        _publications = new();
+        //_publications = new();
         ApprovedEmail = false;
         IsBanned = false;
     }

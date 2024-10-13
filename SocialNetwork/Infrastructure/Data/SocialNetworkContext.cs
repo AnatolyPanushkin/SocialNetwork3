@@ -36,7 +36,9 @@ namespace SocialNetwork.Infrastructure.Data
             {
                 entity
                     .HasMany(user => user.Publications)
-                    .WithOne(publication => publication.User);
+                    .WithOne(publication => publication.User)
+                    .HasForeignKey(pub => pub.UserId)
+                    .IsRequired();
             });
             
             modelBuilder.Entity<User>().OwnsOne(x => x.UserName,

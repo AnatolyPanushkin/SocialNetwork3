@@ -50,9 +50,10 @@ public class UserService : IUserService
 
     public async Task<Publication> AddPublication(PublicationInputDto publicationInputDto)
     {
-        var user = _context.Users.FirstOrDefault(u => u.Id == publicationInputDto.UserGuidId);
+        var user = _context.Users.AsNoTracking().FirstOrDefault(u => u.Id == Guid.Parse(publicationInputDto.UserGuidId));
+        if (user is null) throw new UserNotFound();  
 
-        var newPublication = Publication.AddNewPublication(user, publicationInputDto.TextContent, publicationInputDto.MediaContent);
+        var newPublication = Publication.AddNewPublication(publicationInputDto.UserGuidId, publicationInputDto.TextContent, publicationInputDto.MediaContent);
 
         await _context.Publications.AddAsync(newPublication);
         await _context.SaveChangesAsync();

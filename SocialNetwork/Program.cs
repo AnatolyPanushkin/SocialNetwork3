@@ -10,8 +10,10 @@ using SocialNetwork.Application.Services.UserServices;
 using SocialNetwork.Domain.Events.AddNewUser;
 using SocialNetwork.Domain.Jobs;
 using SocialNetwork.Infrastructure.Data;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSwaggerGenNewtonsoftSupport();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -101,23 +103,50 @@ if (app.Environment.IsDevelopment())
 
 app.MapGet("/", () => "Hello World!");
 
+#region User
 app.MapPost("api/addUser", async (UserInputWithEmailDto userDto, IMediator mediator) =>
 {
     await mediator.Send(new AddUserCommand(userDto));
+});
+
+app.MapPost("api/addUserWithoutApprove", async (UserInputWithEmailDto userDto, IMediator mediator) =>
+{
+    var createdUserId = await mediator.Send(new AddUserWithoutApproveCommand(userDto));
+    return Results.Created($"api/addUserWithoutApprove/", createdUserId);
 });
 
 app.MapPost("api/reportUser", async (IMediator mediator) =>
 {
     
 });
+#endregion
 
 app.MapPost("api/addPublications", async (PublicationInputDto publicationInputDto, IUserService userService) =>
 {
-    var newPublication = await userService.AddPublication(publicationInputDto);
+    var result = await userService.AddPublication(publicationInputDto);
 
-    return Results.Created($"api/addPublications/{newPublication.Id}", newPublication);
+    return TypedResults.Ok(result);
 });
 
-app.MapGet("api/getPublication", async (IMediator mediator)=> await mediator.Send(new GetPublication()));
+app.MapGet("api/getPublication", async (string userId, string ownerId, IMediator mediator) => 
+{
+    var result = await mediator.Send(new GetPublicationQuery(userId, ownerId));
+
+    return TypedResults.Ok(result);
+});
+
+app.MapGet("api/GetPublicationByUserId", async (string userId, IMediator mediator) => 
+{
+    var result = await mediator.Send(new GetPublicationByUserIdQuery(userId));
+
+    return TypedResults.Ok(result);
+});
+
+app.MapGet("api/GetPublicationsWithoutAuth", async (IMediator mediator) =>
+{
+    var result = await mediator.Send(new GetPublicationWithoutAuthQuery());
+
+    return TypedResults.Ok(result);
+});
 
 app.Run();

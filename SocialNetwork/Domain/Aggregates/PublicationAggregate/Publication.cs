@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices.JavaScript;
-using SocialNetwork.Domain.Aggregates.UserAggregate;
+﻿using SocialNetwork.Domain.Aggregates.UserAggregate;
 using SocialNetwork.Domain.Common;
 using SocialNetwork.Domain.Entities;
 

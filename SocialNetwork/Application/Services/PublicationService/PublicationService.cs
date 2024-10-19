@@ -30,12 +30,12 @@ public class PublicationService : IPublicationService
     public async Task<List<PublicationWithUserDto>> GetPublicationByUserId(string userId)
     {
         return await _context.Publications.AsNoTracking().Where(p => p.UserId == Guid.Parse(userId))
-            .Select(p => new PublicationWithUserDto(p.Id.ToString(), p.UserId.ToString(), p.TextContent, p.MediaContent)).ToListAsync();       
+            .Select(p => new PublicationWithUserDto(p.Id.ToString(), p.UserId.ToString(), p.TextContent.Content, p.MediaContent)).ToListAsync();       
     }
 
     public async Task<List<PublicationWithUserDto>> GetPublicationWithoutAuth()
     {
-        var result =  await _context.Publications.AsNoTracking().Select(publication => new PublicationWithUserDto(publication.Id.ToString(), publication.UserId.ToString(), publication.TextContent, publication.MediaContent)).ToListAsync();
+        var result =  await _context.Publications.AsNoTracking().Select(publication => new PublicationWithUserDto(publication.Id.ToString(), publication.UserId.ToString(), publication.TextContent.Content, publication.MediaContent)).ToListAsync();
         return result;
     }
 }
